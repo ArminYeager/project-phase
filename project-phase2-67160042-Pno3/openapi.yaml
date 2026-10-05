@@ -1,0 +1,178 @@
+openapi: 3.0.3
+info:
+  title: Movie Catalog API
+  description: API for managing movies, directors, and studios
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: Development server
+paths:
+  /movies:
+    get:
+      summary: ค้นหาภาพยนตร์
+      tags:
+        - Movies
+      parameters:
+        - name: search
+          in: query
+          description: ค้นหาจากชื่อเรื่องหรือชื่อผู้กำกับ
+          schema:
+            type: string
+      responses:
+        "200":
+          description: รายชื่อภาพยนตร์
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MovieResponse"
+        "500":
+          description: Internal server error
+    post:
+      summary: เพิ่มภาพยนตร์ใหม่
+      tags:
+        - Movies
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MovieInput"
+      responses:
+        "201":
+          description: สร้างสำเร็จ
+        "400":
+          description: ข้อมูลไม่ครบถ้วน
+        "500":
+          description: Internal server error
+
+  /movies/{id}:
+    get:
+      summary: ดูรายละเอียดภาพยนตร์
+      tags:
+        - Movies
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: รายละเอียดภาพยนตร์พร้อมรีวิว
+        "404":
+          description: ไม่พบภาพยนตร์
+        "500":
+          description: Internal server error
+    delete:
+      summary: ลบภาพยนตร์
+      tags:
+        - Movies
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: ลบภาพยนตร์สำเร็จ
+        "404":
+          description: ไม่พบภาพยนตร์
+        "500":
+          description: Internal server error
+
+  /directors:
+    post:
+      summary: เพิ่มผู้กำกับใหม่
+      tags:
+        - Directors
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DirectorInput"
+      responses:
+        "201":
+          description: สร้างสำเร็จ
+        "400":
+          description: ข้อมูลไม่ครบถ้วน
+        "500":
+          description: Internal server error
+
+  /directors/{id}/movies:
+    get:
+      summary: ดูรายชื่อภาพยนตร์ทั้งหมดของผู้กำกับ
+      tags:
+        - Directors
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: ข้อมูลผู้กำกับพร้อมรายชื่อภาพยนตร์
+        "404":
+          description: ไม่พบผู้กำกับ
+        "500":
+          description: Internal server error
+
+components:
+  schemas:
+    MovieResponse:
+      type: object
+      properties:
+        movie_id:
+          type: integer
+        title:
+          type: string
+        release_year:
+          type: integer
+        duration_minutes:
+          type: integer
+        director_name:
+          type: string
+        studio_name:
+          type: string
+        genres:
+          type: string
+    MovieInput:
+      type: object
+      required:
+        - title
+        - director_id
+        - studio_id
+      properties:
+        title:
+          type: string
+          example: "Inception"
+        director_id:
+          type: integer
+          example: 1
+        studio_id:
+          type: integer
+          example: 1
+        release_year:
+          type: integer
+          example: 2010
+        duration_minutes:
+          type: integer
+          example: 148
+    DirectorInput:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: "Christopher Nolan"
+        nationality:
+          type: string
+          example: "British"
+        birth_year:
+          type: integer
+          example: 1970

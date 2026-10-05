@@ -1,0 +1,13 @@
+{
+  "name": "movie-catalog-api",
+  "version": "1.0.0",
+  "description": "Movie Catalog System - Phase 1 (DB/Requirement)",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "mysql2": "^3.10.0"
+  }
+}
